@@ -34,8 +34,15 @@ public class main {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		NodeList nodeList;
 		NodeList nodeListMandats;
+		NodeList nodeListLibelle;
 		String expressionMandats;
+		String expressionLibelle;
 		Node organeRef = null;
+		Node dateDeb = null;
+		Node numeroLegislature=null;
+		Node dateFin=null;
+		String fin = null;
+		String pub = null;
 		// on souhaite ignorer les éléments textes
 		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
@@ -78,16 +85,6 @@ public class main {
 				nodeListMandats = (NodeList) path.evaluate(expressionMandats, nodeList.item(i), XPathConstants.NODESET);
 				Element elementMandats = null;
 				
-				
-				//System.out.println(nodeListMandats.getLength());
-				
-				// parcours des différents mandats
-				//expressionMandats = expression + "/mandats";
-				//System.out.println(expressionMandats);
-				//expressionMandats = "/export/acteurs/acteur[./uid = " + uidActeur + " ]"; // on sélectionne l'ensemble des mandats de l'acteur
-				// uid doit correspondre à un acteur nantais président + parcours de l'ensemble de ces mandats en tant que président !
-				//nodeListMandats = (NodeList) xPath.compile(expressionMandats).evaluate(document, XPathConstants.NODESET);
-				
 				// parcours de l'ensemble des mandats de chaque acteur nantais qui a été président au moins une fois
 				for(int j = 0; j < nodeListMandats.getLength(); j++) {
 					elementMandats = (Element) nodeListMandats.item(j);
@@ -97,17 +94,59 @@ public class main {
 					NodeList contenuMandat = nodeListMandats.item(j).getChildNodes();
 					int nbContenuMandat = contenuMandat.getLength();
 					for (int c = 0; c < nbContenuMandat; c++) { // c = contenu
-						// on sélectionne le noeud "infosQualite"
+						// récupération de la date de publication
+						if (contenuMandat.item(c).getNodeName().equals("datePublication")) {
+							pub= contenuMandat.item(c).getTextContent();
+						}
+						
+						// récupération de la date de fin
+						if (contenuMandat.item(c).getNodeName().equals("dateFin")) {
+							fin= contenuMandat.item(c).getTextContent();
+						}
+						
+						// récupération de la legislature
+						if (contenuMandat.item(c).getNodeName().equals("legislature")){
+							Node legislature = contenuMandat.item(c);
+							numeroLegislature = legislature.getFirstChild();
+						}
+						
+						// récupération de la date de début
+						if (contenuMandat.item(c).getNodeName().equals("dateDebut")){
+							Node date = contenuMandat.item(c);
+							dateDeb = date.getFirstChild();
+						}
+						
+						// récupération du code
 						if (contenuMandat.item(c).getNodeName().equals("organes")){
 							Node organes = contenuMandat.item(c);
 							organeRef = organes.getFirstChild();
-							//System.out.println(organeRef.getTextContent());
-							
-						}
-								
+						}	
 					}
-					//System.out.println(uidMandat.getTextContent()); // OK !
-					System.out.println("<md code=" + organeRef.getTextContent() + " début=");
+					String mdd = "<md code='" + organeRef.getTextContent() + "' début='" + dateDeb.getTextContent() + "' legislature='" + numeroLegislature.getTextContent() + "'";
+					// on ajoute la date de fin si elle est présente
+					if(fin != "") {
+						mdd+=" fin='" + fin + "'";
+					}
+					// on ajoute la date de publication si elle est présente
+					if(pub != "") {
+						mdd+=" pub='" + pub + "'";
+					}
+					mdd+=">";
+					System.out.println(mdd);
+					
+					// récupération du libellé grâce à l'uid
+					//System.out.println("ICI : " + uidMandat.getTextContent()); // OK !
+					expressionLibelle = "/export/organes/organe[./uid = " + uidMandat.getTextContent() + " ]";
+					nodeListLibelle = (NodeList) path.evaluate(expressionLibelle, root, XPathConstants.NODESET);
+					Element elementLibelle = null;
+					for(int l = 0; l < nodeListLibelle.getLength(); l++) {
+						elementLibelle = (Element) nodeListLibelle.item(l);
+						Node uidLibelle = elementLibelle.getFirstChild();
+						String test = uidLibelle.getTextContent();
+						System.out.println(test);
+						
+					}
+					//Node uidLibelle = elementLibelle.getFirstChild().getNextSibling().getNextSibling();
 				}
 			}
 			System.out.println("</nantais>");
