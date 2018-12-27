@@ -35,6 +35,7 @@ public class main {
 		NodeList nodeList;
 		NodeList nodeListMandats;
 		String expressionMandats;
+		Node organeRef = null;
 		// on souhaite ignorer les éléments textes
 		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
@@ -89,17 +90,26 @@ public class main {
 				
 				// parcours de l'ensemble des mandats de chaque acteur nantais qui a été président au moins une fois
 				for(int j = 0; j < nodeListMandats.getLength(); j++) {
-					//System.out.println("ICI");
-					// sélection des mandats de président -> if !!!
 					elementMandats = (Element) nodeListMandats.item(j);
 					Node uidMandat = elementMandats.getFirstChild();
+					
+					
+					NodeList contenuMandat = nodeListMandats.item(j).getChildNodes();
+					int nbContenuMandat = contenuMandat.getLength();
+					for (int c = 0; c < nbContenuMandat; c++) { // c = contenu
+						// on sélectionne le noeud "infosQualite"
+						if (contenuMandat.item(c).getNodeName().equals("organes")){
+							Node organes = contenuMandat.item(c);
+							organeRef = organes.getFirstChild();
+							//System.out.println(organeRef.getTextContent());
+							
+						}
+								
+					}
 					//System.out.println(uidMandat.getTextContent()); // OK !
-					System.out.println("<md code=");
+					System.out.println("<md code=" + organeRef.getTextContent() + " début=");
 				}
 			}
-			
-			
-			
 			System.out.println("</nantais>");
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
