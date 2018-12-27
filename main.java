@@ -65,7 +65,7 @@ public class main {
 			//System.out.println("<" + racine.getNodeName() + ">"); // OK !
 			
 			XPath xPath = XPathFactory.newInstance().newXPath();
-			String expression = "/export/acteurs/acteur[etatCivil/infoNaissance/villeNais = 'Nantes' and mandats/mandat/infosQualite/codeQualite = 'Président']"; // uid ?
+			String expression = "/export/acteurs/acteur[./etatCivil/infoNaissance/villeNais = 'Nantes' and ./mandats/mandat/infosQualite/codeQualite = 'Président']"; // uid ?
 			//nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
 			nodeList = (NodeList) path.evaluate(expression, root, XPathConstants.NODESET);
 			Element element = null;
@@ -136,14 +136,17 @@ public class main {
 					
 					// récupération du libellé grâce à l'uid
 					//System.out.println("ICI : " + uidMandat.getTextContent()); // OK !
-					expressionLibelle = "/export/organes/organe[./uid = " + uidMandat.getTextContent() + " ]";
+					//System.out.println(organeRef.getTextContent());
+					expressionLibelle = "/export/organes/organe[./uid = '" + organeRef.getTextContent() + "']";
+					//System.out.println(expressionLibelle);
 					nodeListLibelle = (NodeList) path.evaluate(expressionLibelle, root, XPathConstants.NODESET);
 					Element elementLibelle = null;
+					//System.out.println(nodeListLibelle.getLength());
 					for(int l = 0; l < nodeListLibelle.getLength(); l++) {
 						elementLibelle = (Element) nodeListLibelle.item(l);
-						Node uidLibelle = elementLibelle.getFirstChild();
-						String test = uidLibelle.getTextContent();
-						System.out.println(test);
+						Node libelle = elementLibelle.getFirstChild().getNextSibling().getNextSibling();
+						String libelleMandat = libelle.getTextContent();
+						System.out.println(libelleMandat);
 						
 					}
 					//Node uidLibelle = elementLibelle.getFirstChild().getNextSibling().getNextSibling();
