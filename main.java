@@ -79,7 +79,9 @@ public class main {
 				// uid doit correspondre à un acteur nantais président + parcours de l'ensemble de ces mandats en tant que président !
 				//nodeListMandats = (NodeList) xPath.compile(expressionMandats).evaluate(document, XPathConstants.NODESET);
 				Element elementMandats = null;
+				// parcours de l'ensemble des mandats de chaque acteur nantais qui a été président au moins une fois
 				for(int j = 0; j < ((NodeList) mandatsNode).getLength(); j++) {
+					// sélection des mandats de président -> if !!!
 					elementMandats = (Element) ((NodeList) mandatsNode).item(j);
 					Node uidMandat = mandatsNode.getFirstChild().getFirstChild().getNextSibling();
 					//System.out.println(uidMandat.getTextContent());
