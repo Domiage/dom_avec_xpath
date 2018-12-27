@@ -34,6 +34,7 @@ public class main {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		NodeList nodeList;
 		NodeList nodeListMandats;
+		String expressionMandats;
 		// on souhaite ignorer les éléments textes
 		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
@@ -65,18 +66,24 @@ public class main {
 				Node uid = element.getFirstChild();
 				Node etatCivil = uid.getNextSibling();
 				Node civ = etatCivil.getFirstChild().getFirstChild();
+				Node mandatsNode = element.getLastChild();
 				String prenom = civ.getNextSibling().getTextContent();
+				String uidActeur = uid.getTextContent(); // correspond à l'identifiant de l'acteur nantais président
 				System.out.println("<personne nom='" + civ.getNextSibling().getTextContent() + " " + civ.getNextSibling().getNextSibling().getTextContent() + "'>");
+				//System.out.println(uidActeur);
 				
 				// parcours des différents mandats
-				//String expressionMandats = "/mandats";
-				expression += "/mandats";
-				nodeListMandats = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
+				//expressionMandats = expression + "/mandats";
+				//System.out.println(expressionMandats);
+				//expressionMandats = "/export/acteurs/acteur[./uid = " + uidActeur + " ]"; // on sélectionne l'ensemble des mandats de l'acteur
+				// uid doit correspondre à un acteur nantais président + parcours de l'ensemble de ces mandats en tant que président !
+				//nodeListMandats = (NodeList) xPath.compile(expressionMandats).evaluate(document, XPathConstants.NODESET);
 				Element elementMandats = null;
-				for(int j = 0; j < nodeListMandats.getLength(); j++) {
-					elementMandats = (Element) nodeListMandats.item(j);
-					Node uidMandat = elementMandats.getFirstChild().getFirstChild().getNextSibling();
-					System.out.println(uidMandat.getTextContent());
+				for(int j = 0; j < ((NodeList) mandatsNode).getLength(); j++) {
+					elementMandats = (Element) ((NodeList) mandatsNode).item(j);
+					Node uidMandat = mandatsNode.getFirstChild().getFirstChild().getNextSibling();
+					//System.out.println(uidMandat.getTextContent());
+					System.out.println(j);
 				}
 			}
 			
