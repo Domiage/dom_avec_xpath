@@ -57,8 +57,9 @@ public class main {
 			//System.out.println("<" + racine.getNodeName() + ">"); // OK !
 			
 			XPath xPath = XPathFactory.newInstance().newXPath();
-			String expression = "/export/acteurs/acteur[./etatCivil/infoNaissance/villeNais = 'Nantes' and ./mandats/mandat/infosQualite/codeQualite = 'Président']"; // uid ?
-			nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
+			String expression = "/export/acteurs/acteur[etatCivil/infoNaissance/villeNais = 'Nantes' and mandats/mandat/infosQualite/codeQualite = 'Président']"; // uid ?
+			//nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
+			nodeList = (NodeList) path.evaluate(expression, root, XPathConstants.NODESET);
 			Element element = null;
 			for(int i=0; i<nodeList.getLength(); i++) {
 				element = (Element) nodeList.item(i);
@@ -72,20 +73,28 @@ public class main {
 				System.out.println("<personne nom='" + civ.getNextSibling().getTextContent() + " " + civ.getNextSibling().getNextSibling().getTextContent() + "'>");
 				//System.out.println(uidActeur);
 				
+				expressionMandats = "mandats/mandat[./infosQualite/codeQualite = 'Président']";
+				nodeListMandats = (NodeList) path.evaluate(expressionMandats, nodeList.item(i), XPathConstants.NODESET);
+				Element elementMandats = null;
+				
+				
+				//System.out.println(nodeListMandats.getLength());
+				
 				// parcours des différents mandats
 				//expressionMandats = expression + "/mandats";
 				//System.out.println(expressionMandats);
 				//expressionMandats = "/export/acteurs/acteur[./uid = " + uidActeur + " ]"; // on sélectionne l'ensemble des mandats de l'acteur
 				// uid doit correspondre à un acteur nantais président + parcours de l'ensemble de ces mandats en tant que président !
 				//nodeListMandats = (NodeList) xPath.compile(expressionMandats).evaluate(document, XPathConstants.NODESET);
-				Element elementMandats = null;
+				
 				// parcours de l'ensemble des mandats de chaque acteur nantais qui a été président au moins une fois
-				for(int j = 0; j < ((NodeList) mandatsNode).getLength(); j++) {
+				for(int j = 0; j < nodeListMandats.getLength(); j++) {
+					//System.out.println("ICI");
 					// sélection des mandats de président -> if !!!
-					elementMandats = (Element) ((NodeList) mandatsNode).item(j);
-					Node uidMandat = mandatsNode.getFirstChild().getFirstChild().getNextSibling();
-					//System.out.println(uidMandat.getTextContent());
-					System.out.println(j);
+					elementMandats = (Element) nodeListMandats.item(j);
+					Node uidMandat = elementMandats.getFirstChild();
+					//System.out.println(uidMandat.getTextContent()); // OK !
+					System.out.println("<md code=");
 				}
 			}
 			
