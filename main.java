@@ -55,8 +55,7 @@ public class main {
 			//System.out.println("<" + racine.getNodeName() + ">"); // OK !
 			
 			XPath xPath = XPathFactory.newInstance().newXPath();
-			//String expression = "/export/acteurs/acteur[./etatCivil/infoNaiss/villeNais = 'Nantes']/uid"; // uid ?
-			String expression = "/export/acteurs/acteur[./etatCivil/infoNaissance/villeNais = 'Nantes']"; // uid ?
+			String expression = "/export/acteurs/acteur[./etatCivil/infoNaissance/villeNais = 'Nantes' and ./mandats/mandat/infosQualite/codeQualite = 'Président']"; // uid ?
 			nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
 			Element element = null;
 			for(int i=0; i<nodeList.getLength(); i++) {
@@ -66,12 +65,14 @@ public class main {
 				Node etatCivil = uid.getNextSibling();
 				Node civ = etatCivil.getFirstChild().getFirstChild();
 				String prenom = civ.getNextSibling().getTextContent();
-				System.out.println("<personne nom=" + civ.getNextSibling().getTextContent() + " " + civ.getNextSibling().getNextSibling().getTextContent() + ">");
+				System.out.println("<personne nom='" + civ.getNextSibling().getTextContent() + " " + civ.getNextSibling().getNextSibling().getTextContent() + "'>");
+				
+				// parcours des différents mandats
 			}
 			
 			
 			
-			
+			System.out.println("</nantais>");
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
