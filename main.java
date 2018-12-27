@@ -33,6 +33,7 @@ public class main {
 		System.out.println(baliseNantais);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		NodeList nodeList;
+		NodeList nodeListMandats;
 		// on souhaite ignorer les éléments textes
 		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
@@ -68,6 +69,15 @@ public class main {
 				System.out.println("<personne nom='" + civ.getNextSibling().getTextContent() + " " + civ.getNextSibling().getNextSibling().getTextContent() + "'>");
 				
 				// parcours des différents mandats
+				//String expressionMandats = "/mandats";
+				expression += "/mandats";
+				nodeListMandats = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
+				Element elementMandats = null;
+				for(int j = 0; j < nodeListMandats.getLength(); j++) {
+					elementMandats = (Element) nodeListMandats.item(j);
+					Node uidMandat = elementMandats.getFirstChild().getFirstChild().getNextSibling();
+					System.out.println(uidMandat.getTextContent());
+				}
 			}
 			
 			
