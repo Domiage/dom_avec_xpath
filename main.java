@@ -149,6 +149,7 @@ public class main {
 						System.out.println(libelleMandat);
 						
 					}
+					System.out.println("</personne>");
 					//Node uidLibelle = elementLibelle.getFirstChild().getNextSibling().getNextSibling();
 				}
 			}
